@@ -4,11 +4,12 @@
 declare( strict_types = 1 );
 
 
+use JDWX\App\BufferLogger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LogLevel;
 
 
 require_once __DIR__ . '/MyTestApplication.php';
-require_once __DIR__ . '/MyTestLogger.php';
 
 
 class ApplicationTest extends TestCase {
@@ -42,54 +43,64 @@ class ApplicationTest extends TestCase {
 
 
     public function testLog() : void {
-        $log = new MyTestLogger();
+        $log = new BufferLogger();
         $app = new MyTestApplication([ 'test/command' ], $log );
         $rContext = [ 'foo' => 'bar' ];
         $app->warning( 'TEST_MESSAGE', $rContext );
-        self::assertSame( LOG_WARNING, $log->level );
+        self::assertCount( 1, $log );
+        $log = $log->shiftLog();
+        self::assertSame( LogLevel::WARNING, $log->level );
         self::assertSame( 'TEST_MESSAGE', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 
 
     public function testLogDebugForDisabled() : void {
-        $log = new MyTestLogger();
+        $log = new BufferLogger();
         $app = new MyTestApplication([ 'test/command' ], $log );
         $app->debug( 'TEST_MESSAGE' );
-        self::assertSame( null, $log->level );
-        self::assertSame( null, $log->message );
-        self::assertSame( null, $log->context );
+        self::assertCount( 0, $log );
     }
 
 
     public function testLogDebugForEnabled() : void {
-        $log = new MyTestLogger();
+        $log = new BufferLogger();
         $app = new MyTestApplication([ 'test/command', '--debug' ], $log );
         $app->run();
         $app->debug( 'TEST_MESSAGE' );
-        self::assertSame( LOG_DEBUG, $log->level );
+        self::assertCount( 3, $log );
+        $log->shiftLog(); # Skip the first two logs
+        $log->shiftLog();
+        $log = $log->shiftLog();
+        self::assertSame( LogLevel::DEBUG, $log->level );
         self::assertSame( 'TEST_MESSAGE', $log->message );
         self::assertSame( [], $log->context );
     }
 
 
     public function testLogDebugForEnabledExplicitly() : void {
-        $log = new MyTestLogger();
+        $log = new BufferLogger();
         $app = new MyTestApplication([ 'test/command', '--debug=yes' ], $log );
         $app->run();
         $app->debug( 'TEST_MESSAGE_DEBUG' );
-        self::assertSame( LOG_DEBUG, $log->level );
+        self::assertCount( 3, $log );
+        $log->shiftLog(); # Skip the first two logs, which are "begins" and "ends" from Application::run().
+        $log->shiftLog();
+        $log = $log->shiftLog();
+        self::assertSame( LogLevel::DEBUG, $log->level );
         self::assertSame( 'TEST_MESSAGE_DEBUG', $log->message );
         self::assertSame( [], $log->context );
     }
 
 
     public function testLogInfo() : void {
-        $log = new MyTestLogger();
+        $log = new BufferLogger();
         $app = new MyTestApplication([ 'test/command' ], $log );
         $rContext = [ 'foo' => 'bar' ];
         $app->info( 'TEST_MESSAGE_INFO', $rContext );
-        self::assertSame( LOG_INFO, $log->level );
+        self::assertCount( 1, $log );
+        $log = $log->shiftLog();
+        self::assertSame( LogLevel::INFO, $log->level );
         self::assertSame( 'TEST_MESSAGE_INFO', $log->message );
         self::assertSame( $rContext, $log->context );
     }
