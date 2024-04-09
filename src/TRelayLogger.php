@@ -43,6 +43,11 @@ trait TRelayLogger {
     }
 
 
+    /**
+     * The actual type of $level in LoggerInterface::log() is mixed, but we don't need
+     * that here. That'll be enforced by implementing LoggerInterface for a class that
+     * uses this trait.
+     */
     abstract public function log( int $level, Stringable|string $message, array $context = [] ) : void;
 
 
