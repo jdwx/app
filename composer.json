@@ -1,0 +1,19 @@
+{
+  "name": "jdwx/app",
+  "description": "A trivial PHP framework for command line apps.",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "JDWX\\App\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.2.0",
+    "jdwx/args": "^1.0",
+    "psr/log": "^3.0"
+  },
+  "require-dev": {
+    "jetbrains/phpstorm-attributes": "^1.0",
+    "phpunit/phpunit": "^9.6"
+  }
+}
