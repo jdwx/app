@@ -198,10 +198,7 @@ abstract class Application implements LoggerInterface {
 
     protected function newArguments( ?array $i_argv ) : Arguments {
         global $argv;
-        if ( is_null( $i_argv ) ) {
-            $i_argv = $argv;
-        }
-        return new Arguments( $i_argv );
+        return new Arguments( $i_argv ?? $argv );
     }
 
 
