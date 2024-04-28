@@ -11,6 +11,7 @@ use JDWX\Args\ArgumentParser;
 use JDWX\Args\Arguments;
 use LogicException;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 
 /**
@@ -70,8 +71,16 @@ abstract class InteractiveApplication extends Application {
      *
      * @noinspection PhpComposerExtensionStubsInspection
      */
-    protected function readlineAddHistory( string $i_stLine ) : void {
-        readline_add_history( $i_stLine );
+    protected function readlineAddHistory( string $i_stLine ) : bool {
+        return readline_add_history( $i_stLine );
+    }
+
+
+    protected function readlineAddHistoryEx( string $i_stLine ) : void {
+        $b = $this->readlineAddHistory( $i_stLine );
+        if ( ! $b ) {
+            throw new RuntimeException( "readline_add_history() failed" );
+        }
     }
 
 
@@ -82,8 +91,16 @@ abstract class InteractiveApplication extends Application {
      *
      * @noinspection PhpComposerExtensionStubsInspection
      */
-    protected function readlineCompletionFunction( callable $i_fnCompletion ) : void {
-        readline_completion_function( $i_fnCompletion );
+    protected function readlineCompletionFunction( callable $i_fnCompletion ) : bool {
+        return readline_completion_function( $i_fnCompletion );
+    }
+
+
+    protected function readlineCompletionFunctionEx( callable $i_fnCompletion ) : void {
+        $b = $this->readlineCompletionFunction( $i_fnCompletion );
+        if ( ! $b ) {
+            throw new RuntimeException( "readline_completion_function() failed" );
+        }
     }
 
 
@@ -93,11 +110,24 @@ abstract class InteractiveApplication extends Application {
      * @noinspection PhpComposerExtensionStubsInspection
      */
     protected function readlineInfo() : array {
-        # This prevents readline from ever looking at filenames as an autocomplete option.
-        readline_info( 'attempted_completion_over', 1 );
         $rlInfo = readline_info();
         assert( is_array( $rlInfo ) );
         return $rlInfo;
+    }
+
+
+    /**
+     * @param string $i_stName The name of the readline info to get or set.
+     * @param mixed|null $i_xValue The value to set, if any.
+     * @return mixed The previous value of the readline info.
+     *
+     * @noinspection PhpComposerExtensionStubsInspection
+     */
+    protected function readlineInfoSet( string $i_stName, mixed $i_xValue = null ) : mixed {
+        if ( is_null( $i_xValue ) ) {
+            return readline_info( $i_stName );
+        }
+        return readline_info( $i_stName, $i_xValue );
     }
 
 
