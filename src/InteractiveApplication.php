@@ -66,6 +66,28 @@ abstract class InteractiveApplication extends Application {
 
 
     /**
+     *  Adds a line to the history list that readline maintains.
+     *
+     * @noinspection PhpComposerExtensionStubsInspection
+     */
+    protected function readlineAddHistory( string $i_stLine ) : void {
+        readline_add_history( $i_stLine );
+    }
+
+
+    /**
+     * Sets the function readline will call when the user presses the tab key.
+     *
+     * @param callable $i_fnCompletion The completion function to install.
+     *
+     * @noinspection PhpComposerExtensionStubsInspection
+     */
+    protected function readlineCompletionFunction( callable $i_fnCompletion ) : void {
+        readline_completion_function( $i_fnCompletion );
+    }
+
+
+    /**
      * @return array The current readline info.
      *
      * @noinspection PhpComposerExtensionStubsInspection
@@ -76,6 +98,18 @@ abstract class InteractiveApplication extends Application {
         $rlInfo = readline_info();
         assert( is_array( $rlInfo ) );
         return $rlInfo;
+    }
+
+
+    /**
+     * Redraws the current input line. Useful if you printed output
+     * during an autocomplete function and want to make sure the user
+     * can still see what they're typing.
+     *
+     * @noinspection PhpComposerExtensionStubsInspection
+     */
+    protected function readlineRedisplay() : void {
+        readline_redisplay();
     }
 
 
