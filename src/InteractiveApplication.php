@@ -39,16 +39,35 @@ abstract class InteractiveApplication extends Application {
 
     /**
      * @param string $i_stPrompt
+     * @param ?bool $i_nbDefault If null, the user must enter "yes" or "no".
+     * @param bool $i_bReturnOnFail If readline() fails, return this value.
      * @return bool
      *
      * Ask a yes/no question.  Returns true for yes, false for no.  If the user
      * enters something that can't be interpreted as "yes" or "no", the question
      * is repeated. See ArgumentParser::parseBool() for a list of recognized
      * values.
+     *
+     * If the $i_nbDefault parameter is not null, the user can press Enter to
+     * accept the default value.  It is your responsibility to ensure that the
+     * prompt makes it clear what the default value is.
+     *
+     * The $i_bReturnOnFail parameter is used to handle the case where readline()
+     * fails, usually because the user pressed Ctrl-D to signal end-of-file.
      */
-    public function askYN( string $i_stPrompt ) : bool {
+    public function askYN( string $i_stPrompt, ?bool $i_nbDefault = null, bool $i_bReturnOnFail = false ) : bool {
         while ( true ) {
             $strYN = $this->readLine( $i_stPrompt );
+            if ( false === $strYN ) {
+                return $i_bReturnOnFail;
+            }
+            if ( '' === $strYN ) {
+                if ( ! is_null( $i_nbDefault ) ) {
+                    return $i_nbDefault;
+                }
+                $this->warning( "Please enter 'yes' or 'no'." );
+                continue;
+            }
             try {
                 return ArgumentParser::parseBool( $strYN );
             } catch ( BadArgumentException $e ) {
