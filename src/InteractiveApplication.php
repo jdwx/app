@@ -9,6 +9,7 @@ namespace JDWX\App;
 
 use JDWX\Args\ArgumentParser;
 use JDWX\Args\Arguments;
+use JDWX\Args\BadArgumentException;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -48,8 +49,11 @@ abstract class InteractiveApplication extends Application {
     public function askYN( string $i_stPrompt ) : bool {
         while ( true ) {
             $strYN = $this->readLine( $i_stPrompt );
-            $bYN = ArgumentParser::parseBool( $strYN );
-            if ( $bYN === true || $bYN === false ) return $bYN;
+            try {
+                return ArgumentParser::parseBool( $strYN );
+            } catch ( BadArgumentException $e ) {
+                $this->error( $e->getMessage() );
+            }
         }
     }
 
