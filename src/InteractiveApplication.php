@@ -62,7 +62,7 @@ abstract class InteractiveApplication extends Application {
                 return $i_bReturnOnFail;
             }
             if ( '' === $strYN ) {
-                if ( ! is_null( $i_nbDefault ) ) {
+                if ( is_bool( $i_nbDefault ) ) {
                     return $i_nbDefault;
                 }
                 $this->warning( "Please enter 'yes' or 'no'." );
