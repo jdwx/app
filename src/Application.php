@@ -42,12 +42,13 @@ abstract class Application implements LoggerInterface {
 
     /** @param string[]|Arguments|null $i_argv */
     public function __construct( array|Arguments|null $i_argv = null, ?LoggerInterface $log = null ) {
+        global $argv;
         $this->log = $log ?? new StderrLogger();
         $this->pid = getmypid();
         if ( $i_argv instanceof Arguments ) {
             $this->args = $i_argv;
         } else {
-            $this->args = $this->newArguments( $i_argv );
+            $this->args = $this->newArguments( $i_argv ?? $argv );
         }
         $this->stCommandPath = $this->args->shiftStringEx();
         $this->stCommand = basename( $this->stCommandPath );
@@ -196,9 +197,8 @@ abstract class Application implements LoggerInterface {
     abstract protected function main() : int;
 
 
-    protected function newArguments( ?array $i_argv ) : Arguments {
-        global $argv;
-        return new Arguments( $i_argv ?? $argv );
+    protected function newArguments( array $i_argv ) : Arguments {
+        return new Arguments( $i_argv );
     }
 
 
