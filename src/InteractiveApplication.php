@@ -84,7 +84,7 @@ abstract class InteractiveApplication extends Application {
      *
      * @noinspection PhpComposerExtensionStubsInspection
      */
-    protected function readLine( string $i_stPrompt ) : bool|string {
+    protected function readLine( string $i_stPrompt ) : false|string {
         return readline( $i_stPrompt );
     }
 
