@@ -103,14 +103,15 @@ abstract class Application implements LoggerInterface {
                 "code" => $i_ex->getCode(),
                 "file" => $i_ex->getFile(),
                 "line" => $i_ex->getLine(),
-                    "value" => $i_ex->getValue(),
-                ] );
+                "value" => $i_ex->getValue(),
+            ] );
         } else {
             $this->error( $i_ex->getMessage(), [
                 "class" => $i_ex::class,
                 "code" => $i_ex->getCode(),
                 "file" => $i_ex->getFile(),
                 "line" => $i_ex->getLine(),
+                "backtrace" => $i_ex->getTrace(),
             ] );
         }
         return static::EXIT_FAILURE;
