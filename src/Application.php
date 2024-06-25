@@ -12,6 +12,8 @@ use InvalidArgumentException;
 use JDWX\Args\ArgumentParser;
 use JDWX\Args\Arguments;
 use JDWX\Args\BadArgumentException;
+use JDWX\Args\ExtraArgumentsException;
+use JDWX\Args\MissingArgumentException;
 use Psr\Log\LoggerInterface;
 use Stringable;
 
@@ -105,6 +107,21 @@ abstract class Application implements LoggerInterface {
                 "line" => $i_ex->getLine(),
                 "value" => $i_ex->getValue(),
             ] );
+        } elseif ( $i_ex instanceof MissingArgumentException ) {
+            $this->error( $i_ex->getMessage(), [
+                "class" => $i_ex::class,
+                "code" => $i_ex->getCode(),
+                "file" => $i_ex->getFile(),
+                "line" => $i_ex->getLine(),
+            ] );
+        } elseif ( $i_ex instanceof ExtraArgumentsException ) {
+            $this->error( $i_ex->getMessage(), [
+                "class" => $i_ex::class,
+                "code" => $i_ex->getCode(),
+                "file" => $i_ex->getFile(),
+                "line" => $i_ex->getLine(),
+                "extra" => $i_ex->getArguments(),
+            ] );
         } else {
             $this->error( $i_ex->getMessage(), [
                 "class" => $i_ex::class,
@@ -163,7 +180,7 @@ abstract class Application implements LoggerInterface {
      * @deprecated Use debug() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
      */
-    public function logDebug( string $i_stMessage, array $i_rContext = []  ) : void {
+    public function logDebug( string $i_stMessage, array $i_rContext = [] ) : void {
         $this->log( LOG_DEBUG, $i_stMessage, $i_rContext );
     }
 
@@ -172,7 +189,7 @@ abstract class Application implements LoggerInterface {
      * @deprecated Use error() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
      */
-    public function logError( string $i_stMessage, array $i_rContext = []  ) : void {
+    public function logError( string $i_stMessage, array $i_rContext = [] ) : void {
         $this->log( LOG_ERR, $i_stMessage, $i_rContext );
     }
 
@@ -181,7 +198,7 @@ abstract class Application implements LoggerInterface {
      * @deprecated Use info() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
      */
-    public function logInfo( string $i_stMessage, array $i_rContext = []  ) : void {
+    public function logInfo( string $i_stMessage, array $i_rContext = [] ) : void {
         $this->log( LOG_INFO, $i_stMessage, $i_rContext );
     }
 
@@ -190,7 +207,7 @@ abstract class Application implements LoggerInterface {
      * @deprecated Use warning() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
      */
-    public function logWarning( string $i_i_stMessage, array $i_rContext = []  ) : void {
+    public function logWarning( string $i_i_stMessage, array $i_rContext = [] ) : void {
         $this->log( LOG_WARNING, $i_i_stMessage, $i_rContext );
     }
 
