@@ -7,9 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\App;
 
 
-use JDWX\Args\ArgumentParser;
 use JDWX\Args\Arguments;
 use JDWX\Args\BadArgumentException;
+use JDWX\Param\Parse;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -69,7 +69,7 @@ abstract class InteractiveApplication extends Application {
                 continue;
             }
             try {
-                return ArgumentParser::parseBool( $strYN );
+                return Parse::bool( $strYN );
             } catch ( BadArgumentException $e ) {
                 $this->error( $e->getMessage() );
             }

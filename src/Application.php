@@ -9,11 +9,11 @@ namespace JDWX\App;
 
 use Exception;
 use InvalidArgumentException;
-use JDWX\Args\ArgumentParser;
 use JDWX\Args\Arguments;
 use JDWX\Args\BadArgumentException;
 use JDWX\Args\ExtraArgumentsException;
 use JDWX\Args\MissingArgumentException;
+use JDWX\Param\Parse;
 use Psr\Log\LoggerInterface;
 use Stringable;
 
@@ -23,6 +23,7 @@ abstract class Application implements LoggerInterface {
 
     /** @noinspection PhpUnused */
     public const EXIT_SUCCESS = 0;
+
     public const EXIT_FAILURE = 1;
 
 
@@ -62,12 +63,10 @@ abstract class Application implements LoggerInterface {
     }
 
 
-    protected function debugCleanup() : void {
-    }
+    protected function debugCleanup() : void {}
 
 
-    protected function debugSetup() : void {
-    }
+    protected function debugSetup() : void {}
 
 
     /** @noinspection PhpNoReturnAttributeCanBeAddedInspection */
@@ -154,7 +153,7 @@ abstract class Application implements LoggerInterface {
      */
     public function handleOption_debug( bool|string $i_bDebug ) : void {
         if ( ! is_bool( $i_bDebug ) ) {
-            $i_bDebug = ArgumentParser::parseBool( $i_bDebug );
+            $i_bDebug = Parse::bool( $i_bDebug );
         }
         $this->bDebug = $i_bDebug;
     }
@@ -225,9 +224,13 @@ abstract class Application implements LoggerInterface {
             $this->setup();
             $this->handleOptions();
             $this->debug( "application begins" );
-            if ( $this->bDebug ) $this->debugSetup();
+            if ( $this->bDebug ) {
+                $this->debugSetup();
+            }
             $rc = $this->main();
-            if ( $this->bDebug ) $this->debugCleanup();
+            if ( $this->bDebug ) {
+                $this->debugCleanup();
+            }
             $this->debug( "application ends with {$rc}" );
             flush();
             $this->exit( $rc );
@@ -240,8 +243,7 @@ abstract class Application implements LoggerInterface {
     }
 
 
-    public function setup() : void {
-    }
+    public function setup() : void {}
 
 
 }
