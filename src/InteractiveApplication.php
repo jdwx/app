@@ -31,7 +31,7 @@ abstract class InteractiveApplication extends Application {
     public function __construct( array|Arguments|null $i_argv = null, ?LoggerInterface $log = null ) {
         # Require the readline extension.
         if ( ! extension_loaded( 'readline' ) ) {
-            throw new LogicException( "The readline extension is required." );
+            throw new LogicException( 'The readline extension is required.' );
         }
         parent::__construct( $i_argv, $log );
     }
@@ -102,7 +102,7 @@ abstract class InteractiveApplication extends Application {
     protected function readlineAddHistoryEx( string $i_stLine ) : void {
         $b = $this->readlineAddHistory( $i_stLine );
         if ( ! $b ) {
-            throw new RuntimeException( "readline_add_history() failed" );
+            throw new RuntimeException( 'readline_add_history() failed' );
         }
     }
 
@@ -122,13 +122,13 @@ abstract class InteractiveApplication extends Application {
     protected function readlineCompletionFunctionEx( callable $i_fnCompletion ) : void {
         $b = $this->readlineCompletionFunction( $i_fnCompletion );
         if ( ! $b ) {
-            throw new RuntimeException( "readline_completion_function() failed" );
+            throw new RuntimeException( 'readline_completion_function() failed' );
         }
     }
 
 
     /**
-     * @return array The current readline info.
+     * @return array<string, mixed> The current readline info.
      *
      * @noinspection PhpComposerExtensionStubsInspection
      */

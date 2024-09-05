@@ -93,41 +93,41 @@ abstract class Application implements LoggerInterface {
     protected function handleException( Exception $i_ex ) : ?int {
         if ( $i_ex instanceof InvalidArgumentException ) {
             $this->error( $i_ex->getMessage(), [
-                "class" => $i_ex::class,
-                "code" => $i_ex->getCode(),
-                "file" => $i_ex->getFile(),
-                "line" => $i_ex->getLine(),
+                'class' => $i_ex::class,
+                'code' => $i_ex->getCode(),
+                'file' => $i_ex->getFile(),
+                'line' => $i_ex->getLine(),
             ] );
         } elseif ( $i_ex instanceof BadArgumentException ) {
             $this->error( $i_ex->getMessage(), [
-                "class" => $i_ex::class,
-                "code" => $i_ex->getCode(),
-                "file" => $i_ex->getFile(),
-                "line" => $i_ex->getLine(),
-                "value" => $i_ex->getValue(),
+                'class' => $i_ex::class,
+                'code' => $i_ex->getCode(),
+                'file' => $i_ex->getFile(),
+                'line' => $i_ex->getLine(),
+                'value' => $i_ex->getValue(),
             ] );
         } elseif ( $i_ex instanceof MissingArgumentException ) {
             $this->error( $i_ex->getMessage(), [
-                "class" => $i_ex::class,
-                "code" => $i_ex->getCode(),
-                "file" => $i_ex->getFile(),
-                "line" => $i_ex->getLine(),
+                'class' => $i_ex::class,
+                'code' => $i_ex->getCode(),
+                'file' => $i_ex->getFile(),
+                'line' => $i_ex->getLine(),
             ] );
         } elseif ( $i_ex instanceof ExtraArgumentsException ) {
             $this->error( $i_ex->getMessage(), [
-                "class" => $i_ex::class,
-                "code" => $i_ex->getCode(),
-                "file" => $i_ex->getFile(),
-                "line" => $i_ex->getLine(),
-                "extra" => $i_ex->getArguments(),
+                'class' => $i_ex::class,
+                'code' => $i_ex->getCode(),
+                'file' => $i_ex->getFile(),
+                'line' => $i_ex->getLine(),
+                'extra' => $i_ex->getArguments(),
             ] );
         } else {
             $this->error( $i_ex->getMessage(), [
-                "class" => $i_ex::class,
-                "code" => $i_ex->getCode(),
-                "file" => $i_ex->getFile(),
-                "line" => $i_ex->getLine(),
-                "backtrace" => $i_ex->getTrace(),
+                'class' => $i_ex::class,
+                'code' => $i_ex->getCode(),
+                'file' => $i_ex->getFile(),
+                'line' => $i_ex->getLine(),
+                'backtrace' => $i_ex->getTrace(),
             ] );
         }
         return static::EXIT_FAILURE;
@@ -135,7 +135,7 @@ abstract class Application implements LoggerInterface {
 
 
     public function handleOption( string $i_stOption, bool|string $i_bstValue ) : void {
-        $method = "handleOption_" . strtolower( $i_stOption );
+        $method = 'handleOption_' . strtolower( $i_stOption );
         if ( method_exists( $this, $method ) ) {
             $this->$method( $i_bstValue );
             return;
@@ -143,7 +143,7 @@ abstract class Application implements LoggerInterface {
         if ( $i_bstValue === true || $i_bstValue === false ) {
             throw new InvalidArgumentException( "Unknown option \"{$i_stOption}\"" );
         }
-        throw new InvalidArgumentException( "Unknown option \"{$i_stOption}" . ( $i_bstValue ? "({$i_bstValue})" : "" ) . "\"" );
+        throw new InvalidArgumentException( "Unknown option \"{$i_stOption}" . ( $i_bstValue ? "({$i_bstValue})" : '' ) . "\"" );
     }
 
 
@@ -176,6 +176,7 @@ abstract class Application implements LoggerInterface {
 
 
     /**
+     * @param mixed[] $i_rContext
      * @deprecated Use debug() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
      */
@@ -185,6 +186,7 @@ abstract class Application implements LoggerInterface {
 
 
     /**
+     * @param mixed[] $i_rContext
      * @deprecated Use error() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
      */
@@ -194,6 +196,7 @@ abstract class Application implements LoggerInterface {
 
 
     /**
+     * @param mixed[] $i_rContext
      * @deprecated Use info() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
      */
@@ -203,6 +206,7 @@ abstract class Application implements LoggerInterface {
 
 
     /**
+     * @param mixed[] $i_rContext
      * @deprecated Use warning() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
      */
@@ -214,6 +218,7 @@ abstract class Application implements LoggerInterface {
     abstract protected function main() : int;
 
 
+    /** @param list<string> $i_argv */
     protected function newArguments( array $i_argv ) : Arguments {
         return new Arguments( $i_argv );
     }
@@ -223,7 +228,7 @@ abstract class Application implements LoggerInterface {
         try {
             $this->setup();
             $this->handleOptions();
-            $this->debug( "application begins" );
+            $this->debug( 'application begins' );
             if ( $this->bDebug ) {
                 $this->debugSetup();
             }

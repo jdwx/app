@@ -16,12 +16,16 @@ readonly class LogEntry {
 
 
     public string $level;
+
     public string $message;
+
+    /** @var mixed[] */
     public array $context;
 
 
+    /** @param mixed[] $i_rContext */
     public function __construct( int|string $i_level, string|Stringable $i_stMessage, array $i_rContext ) {
-        $this->level = match( $i_level ) {
+        $this->level = match ( $i_level ) {
             LogLevel::EMERGENCY, LOG_EMERG => LogLevel::EMERGENCY,
             LogLevel::ALERT, LOG_ALERT => LogLevel::ALERT,
             LogLevel::CRITICAL, LOG_CRIT => LogLevel::CRITICAL,

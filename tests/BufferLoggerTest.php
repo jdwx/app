@@ -15,11 +15,11 @@ class BufferLoggerTest extends TestCase {
     public function testAlert() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
-        $log->alert( "Test", $rContext );
+        $log->alert( 'Test', $rContext );
         self::assertCount( 1, $log );
         $log = $log->shiftLog();
         self::assertSame( LogLevel::ALERT, $log->level );
-        self::assertSame( "Test", $log->message );
+        self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 
@@ -27,11 +27,11 @@ class BufferLoggerTest extends TestCase {
     public function testCritical() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
-        $log->critical( "Test", $rContext );
+        $log->critical( 'Test', $rContext );
         self::assertCount( 1, $log );
         $log = $log->shiftLog();
         self::assertSame( LogLevel::CRITICAL, $log->level );
-        self::assertSame( "Test", $log->message );
+        self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 
@@ -39,11 +39,11 @@ class BufferLoggerTest extends TestCase {
     public function testDebug() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
-        $log->debug( "Test", $rContext );
+        $log->debug( 'Test', $rContext );
         self::assertCount( 1, $log );
         $log = $log->shiftLog();
         self::assertSame( LogLevel::DEBUG, $log->level );
-        self::assertSame( "Test", $log->message );
+        self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 
@@ -51,11 +51,11 @@ class BufferLoggerTest extends TestCase {
     public function testEmergency() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
-        $log->emergency( "Test", $rContext );
+        $log->emergency( 'Test', $rContext );
         self::assertCount( 1, $log );
         $log = $log->shiftLog();
         self::assertSame( LogLevel::EMERGENCY, $log->level );
-        self::assertSame( "Test", $log->message );
+        self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 
@@ -63,11 +63,11 @@ class BufferLoggerTest extends TestCase {
     public function testError() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
-        $log->error( "Test", $rContext );
+        $log->error( 'Test', $rContext );
         self::assertCount( 1, $log );
         $log = $log->shiftLog();
         self::assertSame( LogLevel::ERROR, $log->level );
-        self::assertSame( "Test", $log->message );
+        self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 
@@ -75,11 +75,11 @@ class BufferLoggerTest extends TestCase {
     public function testInfo() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
-        $log->info( "Test", $rContext );
+        $log->info( 'Test', $rContext );
         self::assertCount( 1, $log );
         $log = $log->shiftLog();
         self::assertSame( LogLevel::INFO, $log->level );
-        self::assertSame( "Test", $log->message );
+        self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 
@@ -87,11 +87,11 @@ class BufferLoggerTest extends TestCase {
     public function testNotice() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
-        $log->notice( "Test", $rContext );
+        $log->notice( 'Test', $rContext );
         self::assertCount( 1, $log );
         $log = $log->shiftLog();
         self::assertSame( LogLevel::NOTICE, $log->level );
-        self::assertSame( "Test", $log->message );
+        self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 
@@ -99,11 +99,11 @@ class BufferLoggerTest extends TestCase {
     public function testWarning() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
-        $log->warning( "Test", $rContext );
+        $log->warning( 'Test', $rContext );
         self::assertCount( 1, $log );
         $log = $log->shiftLog();
         self::assertSame( LogLevel::WARNING, $log->level );
-        self::assertSame( "Test", $log->message );
+        self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
     }
 

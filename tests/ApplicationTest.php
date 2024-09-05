@@ -16,27 +16,27 @@ class ApplicationTest extends TestCase {
 
 
     public function testArgs() : void {
-        $app = new MyTestApplication([ 'test/command', 'foo', 'bar' ]);
+        $app = new MyTestApplication( [ 'test/command', 'foo', 'bar' ] );
         self::assertSame( 'foo', $app->args()->shiftStringEx() );
         self::assertSame( 'bar', $app->args()->shiftStringEx() );
     }
 
 
     public function testHandleOptions() : void {
-        $app = new MyTestApplication([ 'test/command', '--foo=bar' ]);
+        $app = new MyTestApplication( [ 'test/command', '--foo=bar' ] );
         $app->run();
         self::assertSame( 'bar', $app->foo );
-        $app = new MyTestApplication([ 'test/command', '--no-foo' ]);
+        $app = new MyTestApplication( [ 'test/command', '--no-foo' ] );
         $app->run();
         self::assertSame( false, $app->foo );
-        $app = new MyTestApplication([ 'test/command', '--bar' ]);
+        $app = new MyTestApplication( [ 'test/command', '--bar' ] );
         $app->run();
         self::assertInstanceOf( InvalidArgumentException::class, $app->ex );
     }
 
 
     public function testHandleOptionsForValue() : void {
-        $app = new MyTestApplication([ 'test/command', '--bar=baz' ]);
+        $app = new MyTestApplication( [ 'test/command', '--bar=baz' ] );
         $app->run();
         self::assertInstanceOf( InvalidArgumentException::class, $app->ex );
     }
@@ -44,7 +44,7 @@ class ApplicationTest extends TestCase {
 
     public function testLog() : void {
         $log = new BufferLogger();
-        $app = new MyTestApplication([ 'test/command' ], $log );
+        $app = new MyTestApplication( [ 'test/command' ], $log );
         $rContext = [ 'foo' => 'bar' ];
         $app->warning( 'TEST_MESSAGE', $rContext );
         self::assertCount( 1, $log );
@@ -57,7 +57,7 @@ class ApplicationTest extends TestCase {
 
     public function testLogDebugForDisabled() : void {
         $log = new BufferLogger();
-        $app = new MyTestApplication([ 'test/command' ], $log );
+        $app = new MyTestApplication( [ 'test/command' ], $log );
         $app->debug( 'TEST_MESSAGE' );
         self::assertCount( 0, $log );
     }
@@ -65,7 +65,7 @@ class ApplicationTest extends TestCase {
 
     public function testLogDebugForEnabled() : void {
         $log = new BufferLogger();
-        $app = new MyTestApplication([ 'test/command', '--debug' ], $log );
+        $app = new MyTestApplication( [ 'test/command', '--debug' ], $log );
         $app->run();
         $app->debug( 'TEST_MESSAGE' );
         self::assertCount( 3, $log );
@@ -80,7 +80,7 @@ class ApplicationTest extends TestCase {
 
     public function testLogDebugForEnabledExplicitly() : void {
         $log = new BufferLogger();
-        $app = new MyTestApplication([ 'test/command', '--debug=yes' ], $log );
+        $app = new MyTestApplication( [ 'test/command', '--debug=yes' ], $log );
         $app->run();
         $app->debug( 'TEST_MESSAGE_DEBUG' );
         self::assertCount( 3, $log );
@@ -95,7 +95,7 @@ class ApplicationTest extends TestCase {
 
     public function testLogInfo() : void {
         $log = new BufferLogger();
-        $app = new MyTestApplication([ 'test/command' ], $log );
+        $app = new MyTestApplication( [ 'test/command' ], $log );
         $rContext = [ 'foo' => 'bar' ];
         $app->info( 'TEST_MESSAGE_INFO', $rContext );
         self::assertCount( 1, $log );
@@ -107,10 +107,10 @@ class ApplicationTest extends TestCase {
 
 
     public function testRun() : void {
-        $st = new MyTestApplication([ 'test/command' ]);
+        $st = new MyTestApplication( [ 'test/command' ] );
         $st->run();
-        self::assertSame( "command", $st->getCommand() );
-        self::assertSame( "test/command", $st->getCommandPath() );
+        self::assertSame( 'command', $st->getCommand() );
+        self::assertSame( 'test/command', $st->getCommandPath() );
         self::assertSame( $st->iExitStatus, 0 );
     }
 
