@@ -35,7 +35,8 @@ class StderrLogger implements LoggerInterface {
         };
         $stMessage = $message instanceof Stringable ? $message->__toString() : $message;
         if ( ! empty( $context ) ) {
-            $stMessage .= ' ' . json_encode( $context, JSON_PRETTY_PRINT );
+            $stJson = json_encode( $context, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE | JSON_THROW_ON_ERROR );
+            $stMessage .= " {$stJson}";
         }
         error_log( "{$stLevel}: {$stMessage}" );
     }
