@@ -16,6 +16,7 @@ use JDWX\Args\MissingArgumentException;
 use JDWX\Param\Parse;
 use Psr\Log\LoggerInterface;
 use Stringable;
+use Throwable;
 
 
 abstract class Application implements LoggerInterface {
@@ -30,10 +31,6 @@ abstract class Application implements LoggerInterface {
     use TRelayLogger;
 
 
-    private Arguments $args;
-
-    private readonly LoggerInterface $log;
-
     protected bool $bDebug = false;
 
     protected int $pid;
@@ -41,6 +38,10 @@ abstract class Application implements LoggerInterface {
     protected string $stCommand;
 
     protected string $stCommandPath;
+
+    private Arguments $args;
+
+    private readonly LoggerInterface $log;
 
 
     /** @param string[]|Arguments|null $i_argv */
@@ -58,20 +59,29 @@ abstract class Application implements LoggerInterface {
     }
 
 
-    public function args() : Arguments {
-        return $this->args;
+    /** @return array<string, mixed> */
+    public static function throwableToArray( Throwable $i_throwable,
+                                             bool      $i_bIncludeTrace = true ) : array {
+        $r = [
+            'class' => $i_throwable::class,
+            'message' => $i_throwable->getMessage(),
+            'code' => $i_throwable->getCode(),
+            'file' => $i_throwable->getFile(),
+            'line' => $i_throwable->getLine(),
+        ];
+        if ( $i_bIncludeTrace ) {
+            $r[ 'backtrace' ] = $i_throwable->getTrace();
+        }
+        $x = $i_throwable->getPrevious();
+        if ( $x ) {
+            $r[ 'previous' ] = self::throwableToArray( $x, $i_bIncludeTrace );
+        }
+        return $r;
     }
 
 
-    protected function debugCleanup() : void {}
-
-
-    protected function debugSetup() : void {}
-
-
-    /** @noinspection PhpNoReturnAttributeCanBeAddedInspection */
-    protected function exit( int $i_iStatus ) : void {
-        exit( $i_iStatus );
+    public function args() : Arguments {
+        return $this->args;
     }
 
 
@@ -82,55 +92,6 @@ abstract class Application implements LoggerInterface {
 
     public function getCommandPath() : string {
         return $this->stCommandPath;
-    }
-
-
-    /**
-     * @return ?int The desired exit status. If null, the exit() method
-     *              will not be called and execution will continue in the
-     *              calling script below the original call to the run() method.
-     */
-    protected function handleException( Exception $i_ex ) : ?int {
-        if ( $i_ex instanceof InvalidArgumentException ) {
-            $this->error( $i_ex->getMessage(), [
-                'class' => $i_ex::class,
-                'code' => $i_ex->getCode(),
-                'file' => $i_ex->getFile(),
-                'line' => $i_ex->getLine(),
-            ] );
-        } elseif ( $i_ex instanceof BadArgumentException ) {
-            $this->error( $i_ex->getMessage(), [
-                'class' => $i_ex::class,
-                'code' => $i_ex->getCode(),
-                'file' => $i_ex->getFile(),
-                'line' => $i_ex->getLine(),
-                'value' => $i_ex->getValue(),
-            ] );
-        } elseif ( $i_ex instanceof MissingArgumentException ) {
-            $this->error( $i_ex->getMessage(), [
-                'class' => $i_ex::class,
-                'code' => $i_ex->getCode(),
-                'file' => $i_ex->getFile(),
-                'line' => $i_ex->getLine(),
-            ] );
-        } elseif ( $i_ex instanceof ExtraArgumentsException ) {
-            $this->error( $i_ex->getMessage(), [
-                'class' => $i_ex::class,
-                'code' => $i_ex->getCode(),
-                'file' => $i_ex->getFile(),
-                'line' => $i_ex->getLine(),
-                'extra' => $i_ex->getArguments(),
-            ] );
-        } else {
-            $this->error( $i_ex->getMessage(), [
-                'class' => $i_ex::class,
-                'code' => $i_ex->getCode(),
-                'file' => $i_ex->getFile(),
-                'line' => $i_ex->getLine(),
-                'backtrace' => $i_ex->getTrace(),
-            ] );
-        }
-        return static::EXIT_FAILURE;
     }
 
 
@@ -167,6 +128,7 @@ abstract class Application implements LoggerInterface {
     }
 
 
+    /** @deprecated Use debug() from LoggerInterface. Preserve until 1.1. */
     public function log( mixed $level, string|Stringable $message, array $context = [] ) : void {
         if ( LOG_DEBUG === $level && ! $this->bDebug ) {
             return;
@@ -179,8 +141,10 @@ abstract class Application implements LoggerInterface {
      * @param mixed[] $i_rContext
      * @deprecated Use debug() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
+     * @suppress PhanDeprecatedFunction
      */
     public function logDebug( string $i_stMessage, array $i_rContext = [] ) : void {
+        /** @noinspection PhpDeprecationInspection */
         $this->log( LOG_DEBUG, $i_stMessage, $i_rContext );
     }
 
@@ -189,8 +153,10 @@ abstract class Application implements LoggerInterface {
      * @param mixed[] $i_rContext
      * @deprecated Use error() from LoggerInterface. Preserve until 1.1.
      * @noinspection PhpUnused
+     * @suppress PhanDeprecatedFunction
      */
     public function logError( string $i_stMessage, array $i_rContext = [] ) : void {
+        /** @noinspection PhpDeprecationInspection */
         $this->log( LOG_ERR, $i_stMessage, $i_rContext );
     }
 
@@ -198,9 +164,11 @@ abstract class Application implements LoggerInterface {
     /**
      * @param mixed[] $i_rContext
      * @deprecated Use info() from LoggerInterface. Preserve until 1.1.
+     * @suppress PhanDeprecatedFunction
      * @noinspection PhpUnused
      */
     public function logInfo( string $i_stMessage, array $i_rContext = [] ) : void {
+        /** @noinspection PhpDeprecationInspection */
         $this->log( LOG_INFO, $i_stMessage, $i_rContext );
     }
 
@@ -208,19 +176,12 @@ abstract class Application implements LoggerInterface {
     /**
      * @param mixed[] $i_rContext
      * @deprecated Use warning() from LoggerInterface. Preserve until 1.1.
+     * @suppress PhanDeprecatedFunction
      * @noinspection PhpUnused
      */
     public function logWarning( string $i_i_stMessage, array $i_rContext = [] ) : void {
+        /** @noinspection PhpDeprecationInspection */
         $this->log( LOG_WARNING, $i_i_stMessage, $i_rContext );
-    }
-
-
-    abstract protected function main() : int;
-
-
-    /** @param list<string> $i_argv */
-    protected function newArguments( array $i_argv ) : Arguments {
-        return new Arguments( $i_argv );
     }
 
 
@@ -249,6 +210,56 @@ abstract class Application implements LoggerInterface {
 
 
     public function setup() : void {}
+
+
+    protected function debugCleanup() : void {}
+
+
+    protected function debugSetup() : void {}
+
+
+    /**
+     * In testing, this function is overridden to capture the exit status,
+     * so it does not actually exit.
+     *
+     * @noinspection PhpNoReturnAttributeCanBeAddedInspection
+     */
+    protected function exit( int $i_iStatus ) : void {
+        exit( $i_iStatus );
+    }
+
+
+    /**
+     * @return ?int The desired exit status. If null, the exit() method
+     *              will not be called and execution will continue in the
+     *              calling script below the original call to the run() method.
+     */
+    protected function handleException( Exception $i_ex ) : ?int {
+        $r = static::throwableToArray( $i_ex, i_bIncludeTrace: false );
+        $stMessage = $r[ 'message' ];
+        unset( $r[ 'message' ] );
+        if ( $i_ex instanceof InvalidArgumentException || $i_ex instanceof MissingArgumentException ) {
+            // Do nothing.
+        } elseif ( $i_ex instanceof BadArgumentException ) {
+            $r[ 'value' ] = $i_ex->getValue();
+        } elseif ( $i_ex instanceof ExtraArgumentsException ) {
+            $r[ 'extra' ] = $i_ex->getArguments();
+        } else {
+            # Redo it to get the stack trace.
+            $r = static::throwableToArray( $i_ex );
+        }
+        $this->error( $stMessage, $r );
+        return static::EXIT_FAILURE;
+    }
+
+
+    abstract protected function main() : int;
+
+
+    /** @param list<string> $i_argv */
+    protected function newArguments( array $i_argv ) : Arguments {
+        return new Arguments( $i_argv );
+    }
 
 
 }
