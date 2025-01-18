@@ -18,6 +18,23 @@ class StderrLogger implements LoggerInterface {
     use TRelayLogger;
 
 
+    public static function formatArray( array $i_r, int $i_uIndent = 0 ) : string {
+        $stIndent = str_repeat( ' ', $i_uIndent );
+        $st = "{$stIndent}{\n";
+        foreach ( $i_r as $stKey => $xValue ) {
+            $st .= "{$stIndent}  {$stKey}: ";
+            if ( is_array( $xValue ) ) {
+                $st .= self::formatArray( $xValue, $i_uIndent + 2 );
+            } else {
+                $st .= $xValue;
+            }
+            $st .= "\n";
+        }
+        $st .= "{$stIndent}}\n";
+        return $st;
+    }
+
+
     /**
      * @inheritDoc
      */
@@ -35,8 +52,14 @@ class StderrLogger implements LoggerInterface {
         };
         $stMessage = $message instanceof Stringable ? $message->__toString() : $message;
         if ( ! empty( $context ) ) {
-            $stJson = json_encode( $context, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE | JSON_THROW_ON_ERROR );
-            $stMessage .= " {$stJson}";
+            if ( isset( $context[ 'class' ] ) ) {
+                $stLevel .= '(' . $context[ 'class' ] . ')';
+                unset( $context[ 'class' ] );
+            }
+            if ( isset( $context[ 'code' ] ) && $context[ 'code' ] === 0 ) {
+                unset( $context[ 'code' ] );
+            }
+            $stMessage .= ' ' . static::formatArray( $context );
         }
         error_log( "{$stLevel}: {$stMessage}" );
     }
