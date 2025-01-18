@@ -18,6 +18,7 @@ class StderrLogger implements LoggerInterface {
     use TRelayLogger;
 
 
+    /** @param array<string, mixed> $i_r */
     public static function formatArray( array $i_r, int $i_uIndent = 0 ) : string {
         $stIndent = str_repeat( ' ', $i_uIndent );
         $st = "{$stIndent}{\n";
