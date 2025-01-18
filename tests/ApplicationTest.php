@@ -5,6 +5,9 @@ declare( strict_types = 1 );
 
 
 use JDWX\App\BufferLogger;
+use JDWX\Args\Arguments;
+use JDWX\Args\BadArgumentException;
+use JDWX\Args\ExtraArgumentsException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
@@ -16,9 +19,76 @@ class ApplicationTest extends TestCase {
 
 
     public function testArgs() : void {
-        $app = new MyTestApplication( [ 'test/command', 'foo', 'bar' ] );
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'test/command', 'foo', 'bar' ], $logger );
         self::assertSame( 'foo', $app->args()->shiftStringEx() );
         self::assertSame( 'bar', $app->args()->shiftStringEx() );
+        self::assertSame( 0, $logger->count() );
+    }
+
+
+    public function testBadArgument() : void {
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'test/command', 'foo' ], $logger );
+        $app->fnCallback = function () {
+            throw new BadArgumentException( 'foo', 'TEST_MESSAGE' );
+        };
+        $app->run();
+        $log = $logger->shiftLog();
+        self::assertSame( LogLevel::ERROR, $log->level );
+        self::assertSame( 'TEST_MESSAGE', $log->message );
+        self::assertSame( BadArgumentException::class, $log->context[ 'class' ] );
+        self::assertSame( 'foo', $log->context[ 'value' ] );
+    }
+
+
+    public function testExitStatus() : void {
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'test/command' ], $logger );
+        $app->niMainExitStatus = 234567;
+        $app->run();
+        self::assertSame( 234567, $app->niObservedExitStatus );
+    }
+
+
+    public function testExtraArguments() : void {
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'test/command', 'foo', 'bar' ], $logger );
+        $app->fnCallback = function () {
+            throw new ExtraArgumentsException( [ 'foo' ], 'TEST_MESSAGE' );
+        };
+        $app->run();
+        $log = $logger->shiftLog();
+        self::assertSame( LogLevel::ERROR, $log->level );
+        self::assertSame( 'TEST_MESSAGE', $log->message );
+        self::assertSame( ExtraArgumentsException::class, $log->context[ 'class' ] );
+        self::assertSame( [ 'foo' ], $log->context[ 'extra' ] );
+    }
+
+
+    public function testHandleException() : void {
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'fake_command' ], $logger );
+        $app->fnCallback = function () {
+            throw new InvalidArgumentException( 'TEST_MESSAGE' );
+        };
+        $app->run();
+        $log = $logger->shiftLog();
+        self::assertSame( LogLevel::ERROR, $log->level );
+        self::assertSame( 'TEST_MESSAGE', $log->message );
+        self::assertSame( $log->context[ 'class' ], InvalidArgumentException::class );
+    }
+
+
+    public function testHandleExceptionForExitStatus() : void {
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'fake_command' ], $logger );
+        $app->niErrorExitStatus = 123456;
+        $app->fnCallback = function () {
+            throw new InvalidArgumentException( 'TEST_MESSAGE', 1 );
+        };
+        $app->run();
+        self::assertSame( 123456, $app->niObservedExitStatus );
     }
 
 
@@ -29,16 +99,22 @@ class ApplicationTest extends TestCase {
         $app = new MyTestApplication( [ 'test/command', '--no-foo' ] );
         $app->run();
         self::assertSame( false, $app->foo );
-        $app = new MyTestApplication( [ 'test/command', '--bar' ] );
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'test/command', '--bar' ], $logger );
         $app->run();
-        self::assertInstanceOf( InvalidArgumentException::class, $app->ex );
+        $log = $logger->shiftLog();
+        self::assertSame( LogLevel::ERROR, $log->level );
+        self::assertSame( InvalidArgumentException::class, $log->context[ 'class' ] );
     }
 
 
     public function testHandleOptionsForValue() : void {
-        $app = new MyTestApplication( [ 'test/command', '--bar=baz' ] );
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'test/command', '--bar=baz' ], $logger );
         $app->run();
-        self::assertInstanceOf( InvalidArgumentException::class, $app->ex );
+        $log = $logger->shiftLog();
+        self::assertSame( LogLevel::ERROR, $log->level );
+        self::assertSame( InvalidArgumentException::class, $log->context[ 'class' ] );
     }
 
 
@@ -106,12 +182,72 @@ class ApplicationTest extends TestCase {
     }
 
 
+    public function testPreMadeArguments() : void {
+        $logger = new BufferLogger();
+        $args = new Arguments( [ 'fake_command', 'foo', 'bar' ] );
+        $app = new MyTestApplication( $args, $logger );
+        self::assertSame( 'foo', $app->args()->shiftStringEx() );
+        self::assertSame( 'bar', $app->args()->shiftStringEx() );
+    }
+
+
     public function testRun() : void {
         $st = new MyTestApplication( [ 'test/command' ] );
         $st->run();
         self::assertSame( 'command', $st->getCommand() );
         self::assertSame( 'test/command', $st->getCommandPath() );
-        self::assertSame( $st->iExitStatus, 0 );
+        self::assertSame( $st->niObservedExitStatus, 0 );
+    }
+
+
+    public function testRuntimeException() : void {
+        $logger = new BufferLogger();
+        $app = new MyTestApplication( [ 'test/command' ], $logger );
+        $app->fnCallback = function () {
+            throw new RuntimeException( 'TEST_MESSAGE' );
+        };
+        $app->run();
+        $log = $logger->shiftLog();
+        self::assertSame( LogLevel::ERROR, $log->level );
+        self::assertSame( 'TEST_MESSAGE', $log->message );
+        self::assertSame( RuntimeException::class, $log->context[ 'class' ] );
+        self::assertArrayHasKey( 'backtrace', $log->context );
+    }
+
+
+    public function testThrowableToArray() : void {
+        try {
+            throw new InvalidArgumentException( 'TEST_MESSAGE' );
+        } catch ( Throwable $ex ) {
+            $r = MyTestApplication::throwableToArray( $ex );
+            self::assertSame( 'InvalidArgumentException', $r[ 'class' ] );
+            self::assertSame( 'TEST_MESSAGE', $r[ 'message' ] );
+            self::assertSame( __FILE__, $r[ 'file' ] );
+            self::assertSame( __LINE__ - 6, $r[ 'line' ] );
+        }
+    }
+
+
+    public function testThrowableToArrayWithPrevious() : void {
+        try {
+            try {
+                throw new InvalidArgumentException( 'TEST_MESSAGE_PREVIOUS', 1 );
+            } catch ( Throwable $ex ) {
+                throw new RuntimeException( 'TEST_MESSAGE', 2, $ex );
+            }
+        } catch ( Throwable $ex ) {
+            $r = MyTestApplication::throwableToArray( $ex );
+            self::assertSame( 'RuntimeException', $r[ 'class' ] );
+            self::assertSame( 'TEST_MESSAGE', $r[ 'message' ] );
+            self::assertSame( 2, $r[ 'code' ] );
+            self::assertSame( __FILE__, $r[ 'file' ] );
+            self::assertSame( __LINE__ - 8, $r[ 'line' ] );
+            self::assertSame( 'InvalidArgumentException', $r[ 'previous' ][ 'class' ] );
+            self::assertSame( 'TEST_MESSAGE_PREVIOUS', $r[ 'previous' ][ 'message' ] );
+            self::assertSame( 1, $r[ 'previous' ][ 'code' ] );
+            self::assertSame( __FILE__, $r[ 'previous' ][ 'file' ] );
+            self::assertSame( __LINE__ - 15, $r[ 'previous' ][ 'line' ] );
+        }
     }
 
 

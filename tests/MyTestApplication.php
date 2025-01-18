@@ -10,19 +10,26 @@ use JDWX\App\Application;
 class MyTestApplication extends Application {
 
 
-    public ?int $iExitStatus = null;
+    public ?int $niObservedExitStatus = null;
+
+    public ?int $niErrorExitStatus = null;
+
+    public ?int $niMainExitStatus = self::EXIT_SUCCESS;
+
     public bool|string|null $foo = null;
-    public ?Exception $ex = null;
+
+    /** @var ?callable */
+    public $fnCallback = null;
 
 
     protected function exit( int $i_iStatus ) : void {
-        $this->iExitStatus = $i_iStatus;
+        $this->niObservedExitStatus = $i_iStatus;
     }
 
 
     protected function handleException( Exception $i_ex ) : ?int {
-        $this->ex = $i_ex;
-        return null;
+        parent::handleException( $i_ex );
+        return $this->niErrorExitStatus;
     }
 
 
@@ -35,9 +42,11 @@ class MyTestApplication extends Application {
     }
 
 
-
     protected function main() : int {
-        return 0;
+        if ( is_callable( $this->fnCallback ) ) {
+            return ( $this->fnCallback )();
+        }
+        return $this->niMainExitStatus;
     }
 
 

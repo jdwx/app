@@ -24,6 +24,16 @@ class BufferLoggerTest extends TestCase {
     }
 
 
+    public function testCount() : void {
+        $logger = new BufferLogger();
+        self::assertSame( 0, $logger->count() );
+        $logger->alert( 'TEST_ALERT' );
+        self::assertSame( 1, $logger->count() );
+        $logger->warning( 'TEST_WARNING' );
+        self::assertSame( 2, $logger->count() );
+    }
+
+
     public function testCritical() : void {
         $log = new BufferLogger();
         $rContext = [ 'foo' => 'bar' ];
@@ -57,6 +67,16 @@ class BufferLoggerTest extends TestCase {
         self::assertSame( LogLevel::EMERGENCY, $log->level );
         self::assertSame( 'Test', $log->message );
         self::assertSame( $rContext, $log->context );
+    }
+
+
+    public function testEmpty() : void {
+        $logger = new BufferLogger();
+        self::assertTrue( $logger->empty() );
+        $logger->alert( 'TEST_ALERT' );
+        self::assertFalse( $logger->empty() );
+        $logger->shiftLog();
+        self::assertTrue( $logger->empty() );
     }
 
 
