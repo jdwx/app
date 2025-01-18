@@ -128,7 +128,6 @@ abstract class Application implements LoggerInterface {
     }
 
 
-    /** @deprecated Use debug() from LoggerInterface. Preserve until 1.1. */
     public function log( mixed $level, string|Stringable $message, array $context = [] ) : void {
         if ( LOG_DEBUG === $level && ! $this->bDebug ) {
             return;
@@ -144,7 +143,6 @@ abstract class Application implements LoggerInterface {
      * @suppress PhanDeprecatedFunction
      */
     public function logDebug( string $i_stMessage, array $i_rContext = [] ) : void {
-        /** @noinspection PhpDeprecationInspection */
         $this->log( LOG_DEBUG, $i_stMessage, $i_rContext );
     }
 
@@ -156,7 +154,6 @@ abstract class Application implements LoggerInterface {
      * @suppress PhanDeprecatedFunction
      */
     public function logError( string $i_stMessage, array $i_rContext = [] ) : void {
-        /** @noinspection PhpDeprecationInspection */
         $this->log( LOG_ERR, $i_stMessage, $i_rContext );
     }
 
@@ -168,7 +165,6 @@ abstract class Application implements LoggerInterface {
      * @noinspection PhpUnused
      */
     public function logInfo( string $i_stMessage, array $i_rContext = [] ) : void {
-        /** @noinspection PhpDeprecationInspection */
         $this->log( LOG_INFO, $i_stMessage, $i_rContext );
     }
 
@@ -180,7 +176,6 @@ abstract class Application implements LoggerInterface {
      * @noinspection PhpUnused
      */
     public function logWarning( string $i_i_stMessage, array $i_rContext = [] ) : void {
-        /** @noinspection PhpDeprecationInspection */
         $this->log( LOG_WARNING, $i_i_stMessage, $i_rContext );
     }
 
