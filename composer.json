@@ -10,7 +10,8 @@
   "require": {
     "php": ">=8.2.0",
     "jdwx/args": "^1.0",
-    "psr/log": "^3.0"
+    "psr/log": "^3.0",
+    "ext-posix": "*"
   },
   "suggest": {
     "ext-readline": "For interactive applications."

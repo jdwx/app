@@ -116,8 +116,12 @@ class Term {
     }
 
 
+    /** FreeBSD wants escape sequences, but macOS does not. Not sure about Linux yet. */
     public static function readline( string $i_stControl ) : string {
-        return chr( 1 ) . $i_stControl . chr( 2 );
+        if ( posix_uname()[ 'sysname' ] === 'FreeBSD' ) {
+            return chr( 1 ) . $i_stControl . chr( 2 );
+        }
+        return $i_stControl;
     }
 
 
