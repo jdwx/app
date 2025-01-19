@@ -116,6 +116,11 @@ class Term {
     }
 
 
+    public static function readline( string $i_stControl ) : string {
+        return chr( 1 ) . $i_stControl . chr( 2 );
+    }
+
+
     public static function reset() : string {
         return "\033[0m";
     }
