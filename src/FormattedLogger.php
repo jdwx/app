@@ -19,19 +19,41 @@ abstract class FormattedLogger implements LoggerInterface {
 
 
     /** @param array<string, mixed> $i_r */
-    public static function formatArray( array $i_r, int $i_uIndent = 0 ) : string {
+    public static function formatArray( array $i_r ) : string {
+        return self::formatArrayInner( $i_r, 0 );
+    }
+
+
+    /**
+     * @param array<string, mixed> $i_r
+     * @param int $i_uIndent The number of spaces to indent nested arrays. (Internal.)
+     * @param list<mixed[]|object> $i_rAlreadySeen Objects that have already been printed. (Internal.)
+     * @return string The formatted string representation of the array.
+     */
+    private static function formatArrayInner( array $i_r, int $i_uIndent,
+                                              array &$i_rAlreadySeen = [] ) : string {
         $stIndent = str_repeat( ' ', $i_uIndent );
-        $st = "{$stIndent}{\n";
+        $st = "{\n";
         foreach ( $i_r as $stKey => $xValue ) {
             $st .= "{$stIndent}  {$stKey}: ";
             if ( is_array( $xValue ) ) {
-                $st .= self::formatArray( $xValue, $i_uIndent + 2 );
+                if ( in_array( $xValue, $i_rAlreadySeen, true ) ) {
+                    $st .= "array (already printed)\n";
+                } else {
+                    $i_rAlreadySeen[] = $xValue;
+                    $st .= 'array ' . self::formatArrayInner( $xValue, $i_uIndent + 2, $i_rAlreadySeen );
+                }
             } elseif ( is_object( $xValue ) ) {
-                $st .= get_class( $xValue ) . ' ' . self::formatArray( (array) $xValue, $i_uIndent + 2 );
+                if ( in_array( $xValue, $i_rAlreadySeen, true ) ) {
+                    $st .= get_class( $xValue ) . " (already printed)\n";
+                } else {
+                    $i_rAlreadySeen[] = $xValue;
+                    $st .= get_class( $xValue ) . ' ' . self::formatArrayInner( (array) $xValue, $i_uIndent + 2, $i_rAlreadySeen );
+                }
             } else {
                 $st .= $xValue;
+                $st .= "\n";
             }
-            $st .= "\n";
         }
         $st .= "{$stIndent}}\n";
         return $st;

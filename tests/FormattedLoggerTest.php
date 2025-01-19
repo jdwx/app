@@ -23,6 +23,33 @@ final class FormattedLoggerTest extends TestCase {
     }
 
 
+    public function testFormatArrayForArrayArrayLoop() : void {
+        $x = [ 'foo' => 'bar' ];
+        $r = [ 'x' => & $x, 'baz' => 'qux' ];
+        $x[ 'r' ] = $r;
+        $result = StderrLogger::formatArray( $x );
+        self::assertStringContainsString( 'foo', $result );
+        self::assertStringContainsString( 'bar', $result );
+        self::assertStringContainsString( 'baz', $result );
+        self::assertStringContainsString( 'qux', $result );
+        self::assertStringContainsString( 'already printed', $result );
+    }
+
+
+    public function testFormatArrayForArrayObjectLoop() : void {
+        $x = new stdClass();
+        $x->foo = 'bar';
+        $r = [ 'x' => $x, 'baz' => 'qux' ];
+        $x->r = $r;
+        $result = StderrLogger::formatArray( [ 'x' => $x ] );
+        self::assertStringContainsString( 'foo', $result );
+        self::assertStringContainsString( 'bar', $result );
+        self::assertStringContainsString( 'baz', $result );
+        self::assertStringContainsString( 'qux', $result );
+        self::assertStringContainsString( 'already printed', $result );
+    }
+
+
     public function testFormatArrayForNestedArray() : void {
         $result = StderrLogger::formatArray( [ 'message' => 'TEST_MESSAGE', 'foo' => [ 'bar' => 'baz' ] ] );
         self::assertStringContainsString( 'TEST_MESSAGE', $result );
@@ -39,6 +66,36 @@ final class FormattedLoggerTest extends TestCase {
         self::assertStringContainsString( 'stdClass', $result );
         self::assertStringContainsString( 'foo', $result );
         self::assertStringContainsString( 'bar', $result );
+    }
+
+
+    public function testFormatArrayForObjectArrayLoop() : void {
+        $x = new stdClass();
+        $x->foo = 'bar';
+        $r = [ 'x' => $x ];
+        $x->r = $r;
+        $result = StderrLogger::formatArray( $r );
+        self::assertStringContainsString( 'stdClass', $result );
+        self::assertStringContainsString( 'foo', $result );
+        self::assertStringContainsString( 'bar', $result );
+        self::assertStringContainsString( 'already printed', $result );
+    }
+
+
+    public function testFormatArrayForObjectObjectLoop() : void {
+        $x = new stdClass();
+        $x->foo = 'bar';
+        $y = new stdClass();
+        $y->baz = 'qux';
+        $x->y = $y;
+        $y->x = $x;
+        $result = StderrLogger::formatArray( [ 'x' => $x ] );
+        self::assertStringContainsString( 'stdClass', $result );
+        self::assertStringContainsString( 'foo', $result );
+        self::assertStringContainsString( 'bar', $result );
+        self::assertStringContainsString( 'baz', $result );
+        self::assertStringContainsString( 'qux', $result );
+        self::assertStringContainsString( 'already printed', $result );
     }
 
 
