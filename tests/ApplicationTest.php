@@ -4,10 +4,10 @@
 declare( strict_types = 1 );
 
 
-use JDWX\App\BufferLogger;
 use JDWX\Args\Arguments;
 use JDWX\Args\BadArgumentException;
 use JDWX\Args\ExtraArgumentsException;
+use JDWX\Log\BufferLogger;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 

@@ -7,12 +7,11 @@ declare( strict_types = 1 );
 namespace JDWX\App;
 
 
-class StderrLogger extends FormattedLogger {
-
-
-    protected function write( string $stMessage ) : void {
-        error_log( $stMessage );
-    }
+/**
+ * @deprecated Use JDWX\Log\StderrLogger.
+ * Retain until 1.1.0
+ */
+class StderrLogger extends \JDWX\Log\StderrLogger {
 
 
 }
