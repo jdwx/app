@@ -9,7 +9,7 @@ namespace JDWX\App;
 
 /**
  * @deprecated Use JDWX\Log\BufferLogger
- * Retain until 1.1.0.
+ * Retain until 1.2.0.
  */
 class BufferLogger extends \JDWX\Log\BufferLogger {
 

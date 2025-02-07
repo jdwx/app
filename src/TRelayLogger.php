@@ -12,7 +12,7 @@ use JDWX\Log\RelayLoggerTrait;
 
 /**
  * @deprecated Use JDWX\Log\RelayLoggerTrait
- * Retain until 1.1.0
+ * Retain until 1.2.0
  */
 trait TRelayLogger {
 
