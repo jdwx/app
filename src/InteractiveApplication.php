@@ -8,8 +8,8 @@ namespace JDWX\App;
 
 
 use JDWX\Args\Arguments;
-use JDWX\Args\BadArgumentException;
 use JDWX\Param\Parse;
+use JDWX\Param\ParseException;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -70,7 +70,7 @@ abstract class InteractiveApplication extends Application {
             }
             try {
                 return Parse::bool( $strYN );
-            } catch ( BadArgumentException $e ) {
+            } catch ( ParseException $e ) {
                 $this->error( $e->getMessage() );
             }
         }
