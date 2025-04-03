@@ -139,50 +139,6 @@ abstract class Application implements LoggerInterface {
     }
 
 
-    /**
-     * @param mixed[] $i_rContext
-     * @deprecated Use debug() from LoggerInterface. Preserve until 1.1.
-     * @noinspection PhpUnused
-     * @suppress PhanDeprecatedFunction
-     */
-    public function logDebug( string $i_stMessage, array $i_rContext = [] ) : void {
-        $this->log( LOG_DEBUG, $i_stMessage, $i_rContext );
-    }
-
-
-    /**
-     * @param mixed[] $i_rContext
-     * @deprecated Use error() from LoggerInterface. Preserve until 1.1.
-     * @noinspection PhpUnused
-     * @suppress PhanDeprecatedFunction
-     */
-    public function logError( string $i_stMessage, array $i_rContext = [] ) : void {
-        $this->log( LOG_ERR, $i_stMessage, $i_rContext );
-    }
-
-
-    /**
-     * @param mixed[] $i_rContext
-     * @deprecated Use info() from LoggerInterface. Preserve until 1.1.
-     * @suppress PhanDeprecatedFunction
-     * @noinspection PhpUnused
-     */
-    public function logInfo( string $i_stMessage, array $i_rContext = [] ) : void {
-        $this->log( LOG_INFO, $i_stMessage, $i_rContext );
-    }
-
-
-    /**
-     * @param mixed[] $i_rContext
-     * @deprecated Use warning() from LoggerInterface. Preserve until 1.1.
-     * @suppress PhanDeprecatedFunction
-     * @noinspection PhpUnused
-     */
-    public function logWarning( string $i_i_stMessage, array $i_rContext = [] ) : void {
-        $this->log( LOG_WARNING, $i_i_stMessage, $i_rContext );
-    }
-
-
     final public function run() : void {
         try {
             $this->setup();
