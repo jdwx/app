@@ -13,10 +13,10 @@ use JDWX\Args\Arguments;
 use JDWX\Args\BadArgumentException;
 use JDWX\Args\ExtraArgumentsException;
 use JDWX\Args\MissingArgumentException;
-use JDWX\Log\RelayLoggerTrait;
 use JDWX\Log\StderrLogger;
 use JDWX\Param\Parse;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 use Stringable;
 use Throwable;
 
@@ -30,7 +30,7 @@ abstract class Application implements LoggerInterface {
     public const EXIT_FAILURE = 1;
 
 
-    use RelayLoggerTrait;
+    use LoggerTrait;
 
 
     protected bool $bDebug = false;
