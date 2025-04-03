@@ -17,6 +17,7 @@ use JDWX\Log\StderrLogger;
 use JDWX\Param\Parse;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
+use Psr\Log\LogLevel;
 use Stringable;
 use Throwable;
 
@@ -131,7 +132,7 @@ abstract class Application implements LoggerInterface {
 
 
     public function log( mixed $level, string|Stringable $message, array $context = [] ) : void {
-        if ( LOG_DEBUG === $level && ! $this->bDebug ) {
+        if ( ( LogLevel::DEBUG === $level || LOG_DEBUG === $level ) && ! $this->bDebug ) {
             return;
         }
         $this->log->log( $level, $message, $context );

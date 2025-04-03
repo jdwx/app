@@ -15,6 +15,7 @@ use JDWX\Log\RelayLoggerTrait;
  * @suppress PhanDeprecatedTrait
  *
  * Retain until 1.2.0
+ * @phpstan-ignore trait.unused
  */
 trait TRelayLogger {
 
