@@ -83,6 +83,11 @@ abstract class Application implements LoggerInterface {
     }
 
 
+    public function __invoke() : void {
+        $this->run();
+    }
+
+
     public function args() : Arguments {
         return $this->args;
     }
@@ -177,6 +182,7 @@ abstract class Application implements LoggerInterface {
      * so it does not actually exit.
      *
      * @noinspection PhpNoReturnAttributeCanBeAddedInspection
+     * @codeCoverageIgnore
      */
     protected function exit( int $i_iStatus ) : void {
         exit( $i_iStatus );
