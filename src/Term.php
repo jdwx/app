@@ -75,14 +75,16 @@ class Term {
         if ( $i_stFG ) {
             if ( $i_stBG ) {
                 return "\033[" . self::colorFG( $i_stFG ) . ';' . self::colorBG( $i_stBG ) . 'm';
-            } else {
-                return "\033[" . self::colorFG( $i_stFG ) . 'm';
             }
-        } elseif ( $i_stBG ) {
-            return "\033[" . self::colorBG( $i_stBG ) . 'm';
-        } else {
-            return "\033[0m";
+
+            return "\033[" . self::colorFG( $i_stFG ) . 'm';
         }
+
+        if ( $i_stBG ) {
+            return "\033[" . self::colorBG( $i_stBG ) . 'm';
+        }
+
+        return "\033[0m";
     }
 
 
