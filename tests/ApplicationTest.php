@@ -30,7 +30,7 @@ class ApplicationTest extends TestCase {
     public function testBadArgument() : void {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'test/command', 'foo' ], $logger );
-        $app->fnCallback = function () {
+        $app->fnCallback = static function () {
             throw new BadArgumentException( 'foo', 'TEST_MESSAGE' );
         };
         $app->run();
@@ -54,7 +54,7 @@ class ApplicationTest extends TestCase {
     public function testExtraArguments() : void {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'test/command', 'foo', 'bar' ], $logger );
-        $app->fnCallback = function () {
+        $app->fnCallback = static function () {
             throw new ExtraArgumentsException( [ 'foo' ], 'TEST_MESSAGE' );
         };
         $app->run();
@@ -69,14 +69,14 @@ class ApplicationTest extends TestCase {
     public function testHandleException() : void {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'fake_command' ], $logger );
-        $app->fnCallback = function () {
+        $app->fnCallback = static function () {
             throw new InvalidArgumentException( 'TEST_MESSAGE' );
         };
         $app->run();
         $log = $logger->shiftLog();
         self::assertSame( LogLevel::ERROR, $log->level );
         self::assertSame( 'TEST_MESSAGE', $log->message );
-        self::assertSame( $log->context[ 'class' ], InvalidArgumentException::class );
+        self::assertSame( InvalidArgumentException::class, $log->context[ 'class' ] );
     }
 
 
@@ -84,7 +84,7 @@ class ApplicationTest extends TestCase {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'fake_command' ], $logger );
         $app->niErrorExitStatus = 123456;
-        $app->fnCallback = function () {
+        $app->fnCallback = static function () {
             throw new InvalidArgumentException( 'TEST_MESSAGE', 1 );
         };
         $app->run();
@@ -98,7 +98,7 @@ class ApplicationTest extends TestCase {
         self::assertSame( 'bar', $app->foo );
         $app = new MyTestApplication( [ 'test/command', '--no-foo' ] );
         $app->run();
-        self::assertSame( false, $app->foo );
+        self::assertFalse( $app->foo );
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'test/command', '--bar' ], $logger );
         $app->run();
@@ -115,6 +115,15 @@ class ApplicationTest extends TestCase {
         $log = $logger->shiftLog();
         self::assertSame( LogLevel::ERROR, $log->level );
         self::assertSame( InvalidArgumentException::class, $log->context[ 'class' ] );
+    }
+
+
+    public function testInvoke() : void {
+        $st = new MyTestApplication( [ 'test/command' ] );
+        $st();
+        self::assertSame( 'command', $st->getCommand() );
+        self::assertSame( 'test/command', $st->getCommandPath() );
+        self::assertSame( 0, $st->niObservedExitStatus );
     }
 
 
@@ -196,14 +205,14 @@ class ApplicationTest extends TestCase {
         $st->run();
         self::assertSame( 'command', $st->getCommand() );
         self::assertSame( 'test/command', $st->getCommandPath() );
-        self::assertSame( $st->niObservedExitStatus, 0 );
+        self::assertSame( 0, $st->niObservedExitStatus );
     }
 
 
     public function testRuntimeException() : void {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'test/command' ], $logger );
-        $app->fnCallback = function () {
+        $app->fnCallback = static function () {
             throw new RuntimeException( 'TEST_MESSAGE' );
         };
         $app->run();
