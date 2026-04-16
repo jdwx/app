@@ -104,6 +104,7 @@ abstract class Application implements LoggerInterface {
 
 
     public function handleOption( string $i_stOption, bool|string $i_bstValue ) : void {
+        $i_stOption = str_replace( '-', '_', $i_stOption );
         $method = 'handleOption_' . strtolower( $i_stOption );
         if ( method_exists( $this, $method ) ) {
             $this->$method( $i_bstValue );
