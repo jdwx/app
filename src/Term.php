@@ -13,7 +13,7 @@ namespace JDWX\App;
 /**
  * Right now this only supports XTERM/VT100/ANSI terminal escape sequences.
  *
- * Sadly the ncurses extension is no longer available on all the platforms
+ * Sadly, the ncurses extension is no longer available on all the platforms
  * we need to support. So to the extent this looks like reinventing the
  * wheel (poorly), that's because it is.
  */
