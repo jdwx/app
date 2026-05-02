@@ -69,7 +69,7 @@ trait InteractiveTrait {
      * @noinspection PhpComposerExtensionStubsInspection
      */
     protected function readLine( string $i_stPrompt ) : false|string {
-        return readline( $i_stPrompt );
+        return readline( Term::readline( $i_stPrompt ) );
     }
 
 
