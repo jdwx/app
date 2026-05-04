@@ -31,7 +31,9 @@ abstract class InteractiveApplication extends Application {
     public function __construct( array|Arguments|null $i_argv = null, ?LoggerInterface $log = null ) {
         # Require the readline extension.
         if ( ! extension_loaded( 'readline' ) ) {
+            // @codeCoverageIgnoreStart
             throw new LogicException( 'The readline extension is required.' );
+            // @codeCoverageIgnoreEnd
         }
         parent::__construct( $i_argv, $log );
     }
