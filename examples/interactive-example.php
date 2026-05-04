@@ -15,7 +15,11 @@ use JDWX\App\Term;
 
 
     protected function main() : int {
-        $this->setDefaultPrompt( Term::bold() . Term::color( Term::RED ) . 'Prompt> ' . Term::reset() );
+        $stPrompt = Term::color( Term::RED ) . 'Prompt> ' . Term::reset();
+        echo $stPrompt, "AFTER!\n";
+        $stPrompt = Term::bold() . $stPrompt;
+        echo $stPrompt, "AFTER!\n";
+        $this->setDefaultPrompt( $stPrompt );
         $st = $this->readLine();
         if ( $st === false ) {
             return 1;
