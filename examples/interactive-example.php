@@ -16,7 +16,7 @@ use JDWX\App\Term;
 
     /** @noinspection PhpComposerExtensionStubsInspection */
     protected function main() : int {
-        $stPrompt = Term::color( Term::RED ) . 'Prompt> ' . Term::reset();
+        $stPrompt = Term::color( Term::RED ) . 'Prompt>' . Term::reset() . ' ';
         echo $stPrompt, "AFTER!\n";
         $stPrompt = Term::bold() . $stPrompt;
         echo $stPrompt, "AFTER!\n";
@@ -27,16 +27,16 @@ use JDWX\App\Term;
         }
         echo "You said: {$st}\n", Term::reset(), "Now try:\n";
 
-        $stAltPrompt = Term::bold() . Term::color( Term::RED ) . 'AltPrompt> ' . Term::reset();
-        $st = readline( $stAltPrompt );
+        $stPrompt = Term::bold() . Term::color( Term::RED ) . 'Prompt>' . Term::reset() . ' ';
+        $st = \readline( $stPrompt );
         echo "You said: {$st}\n", Term::reset(), "Now try:\n";
 
-        $stAltPrompt = Term::rlHack( Term::bold() . Term::color( Term::RED ), 1 ) . 'AltPrompt> ' . Term::rlHack( Term::reset(), 1 );
-        $st = readline( $stAltPrompt );
+        $stPrompt = Term::rlHack( Term::bold() . Term::color( Term::RED ), 1 ) . 'Prompt>' . Term::rlHack( Term::reset(), 1 ) . ' ';
+        $st = readline( $stPrompt );
         echo "You said: {$st}\n", Term::reset(), "Now try:\n";
 
-        $stAltPrompt = Term::rlHack( Term::bold() . Term::color( Term::RED ), 2 ) . 'AltPrompt> ' . Term::rlHack( Term::reset(), 2 );
-        $st = readline( $stAltPrompt );
+        $stPrompt = Term::rlHack( Term::bold() . Term::color( Term::RED ), 2 ) . 'Prompt>' . Term::rlHack( Term::reset(), 2 ) . ' ';
+        $st = readline( $stPrompt );
         echo "You said: {$st}\n", Term::reset();
 
         return 0;
