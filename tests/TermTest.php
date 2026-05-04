@@ -28,7 +28,7 @@ final class TermTest extends TestCase {
     public function testReadline() : void {
         $markers = $this->inferReadlineMarkers();
         $stRed = Term::color( Term::RED );
-        $stReadlineRed = $markers[ 0 ] . $stRed . $markers[ 1 ];
+        $stReadlineRed = $markers[ 0 ] . $stRed . $markers[ 1 ] . ' ';
         self::assertSame( $stReadlineRed, Term::readline( $stRed ) );
 
         $stBold = Term::bold();
@@ -45,7 +45,7 @@ final class TermTest extends TestCase {
     public function testReadlineTwice() : void {
         $markers = $this->inferReadlineMarkers();
         $stRed = Term::color( Term::RED );
-        $stReadlineRed = $markers[ 0 ] . $stRed . $markers[ 1 ];
+        $stReadlineRed = $markers[ 0 ] . $stRed . $markers[ 1 ] . ' ';
         self::assertSame( $stReadlineRed, Term::readline( $stRed ) );
         self::assertSame( $stReadlineRed, Term::readline( Term::readline( $stRed ) ) );
     }
@@ -60,17 +60,7 @@ final class TermTest extends TestCase {
      * @return list<string> The inferred readline markers for the current readline backend.
      */
     private function inferReadlineMarkers() : array {
-        $term = new class extends Term {
-
-
-            /** @return list<string> */
-            public function readlineMarkersRelay() : array {
-                return static::readlineMarkers();
-            }
-
-
-        };
-        return $term->readlineMarkersRelay();
+        return [ chr( 1 ), chr( 1 ) ];
     }
 
 
