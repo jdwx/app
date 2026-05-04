@@ -230,16 +230,22 @@ class Term {
     /**
      * @return array{string, string} The open/close markers readline expects
      * around non-printing spans, picked for the underlying readline library.
+     *
+     * GNU readline uses \1 ... \2 (start/end ignore). libedit uses \1 ... \1
+     * as a toggle. PHP's libedit binding reports library_version as a string
+     * containing "EditLine" (e.g. "EditLine wrapper") on both macOS and
+     * FreeBSD, while GNU readline reports a numeric version string.
      */
     protected static function readlineMarkers() : array {
         if ( function_exists( 'readline_info' ) ) {
             $info = readline_info();
-            if ( is_array( $info ) && isset( $info[ 'library_version' ] ) ) {
-                # This is GNU readline.
+            $stVersion = is_array( $info ) ? ( $info[ 'library_version' ] ?? '' ) : '';
+            if ( is_string( $stVersion ) && '' !== $stVersion && ! str_contains( $stVersion, 'EditLine' ) ) {
+                # GNU readline.
                 return [ "\x01", "\x02" ];
             }
         }
-        # Assume libedit.
+        # libedit (or unknown — the toggle form is the safer default).
         return [ "\x01", "\x01" ];
     }
 
