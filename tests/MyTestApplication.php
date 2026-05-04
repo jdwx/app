@@ -18,7 +18,7 @@ class MyTestApplication extends Application {
 
     public bool|string|null $foo = null;
 
-    /** @var ?callable */
+    /** @var callable():int|null */
     public $fnCallback = null;
 
 

@@ -4,10 +4,12 @@
 declare( strict_types = 1 );
 
 
+use JDWX\App\Application;
 use JDWX\Args\Arguments;
 use JDWX\Args\BadArgumentException;
 use JDWX\Args\ExtraArgumentsException;
 use JDWX\Log\BufferLogger;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
@@ -15,7 +17,8 @@ use Psr\Log\LogLevel;
 require_once __DIR__ . '/MyTestApplication.php';
 
 
-class ApplicationTest extends TestCase {
+#[CoversClass( Application::class )]
+final class ApplicationTest extends TestCase {
 
 
     public function testArgs() : void {
@@ -30,7 +33,7 @@ class ApplicationTest extends TestCase {
     public function testBadArgument() : void {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'test/command', 'foo' ], $logger );
-        $app->fnCallback = static function () {
+        $app->fnCallback = static function () : int {
             throw new BadArgumentException( 'foo', 'TEST_MESSAGE' );
         };
         $app->run();
@@ -54,7 +57,7 @@ class ApplicationTest extends TestCase {
     public function testExtraArguments() : void {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'test/command', 'foo', 'bar' ], $logger );
-        $app->fnCallback = static function () {
+        $app->fnCallback = static function () : int {
             throw new ExtraArgumentsException( [ 'foo' ], 'TEST_MESSAGE' );
         };
         $app->run();
@@ -69,7 +72,7 @@ class ApplicationTest extends TestCase {
     public function testHandleException() : void {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'fake_command' ], $logger );
-        $app->fnCallback = static function () {
+        $app->fnCallback = static function () : int {
             throw new InvalidArgumentException( 'TEST_MESSAGE' );
         };
         $app->run();
@@ -84,7 +87,7 @@ class ApplicationTest extends TestCase {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'fake_command' ], $logger );
         $app->niErrorExitStatus = 123456;
-        $app->fnCallback = static function () {
+        $app->fnCallback = static function () : int {
             throw new InvalidArgumentException( 'TEST_MESSAGE', 1 );
         };
         $app->run();
@@ -212,7 +215,7 @@ class ApplicationTest extends TestCase {
     public function testRuntimeException() : void {
         $logger = new BufferLogger();
         $app = new MyTestApplication( [ 'test/command' ], $logger );
-        $app->fnCallback = static function () {
+        $app->fnCallback = static function () : int {
             throw new RuntimeException( 'TEST_MESSAGE' );
         };
         $app->run();
