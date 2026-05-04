@@ -135,17 +135,7 @@ class Term {
             fn( array $m ) => $stOpen . $m[ 0 ] . $stClose,
             $stStripped
         );
-        $stResult ??= $stStripped;
-        # Libedit only flushes buffered literal-mode bytes at end-of-prompt
-        # if the parser is still in literal mode. With \1...\1 toggling,
-        # ensure we end inside a literal span so the trailing escape (if any)
-        # actually reaches the terminal.
-        if ( $stOpen === $stClose ) {
-            $stResult = str_ends_with( $stResult, $stClose )
-                ? substr( $stResult, 0, -strlen( $stClose ) )
-                : $stResult . $stOpen;
-        }
-        return $stResult;
+        return $stResult ?? $stStripped;
     }
 
 
