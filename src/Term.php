@@ -118,12 +118,24 @@ class Term {
     }
 
 
-    /** FreeBSD wants escape sequences, but macOS does not. Not sure about Linux yet. */
-    public static function readline( string $i_stControl ) : string {
-        if ( posix_uname()[ 'sysname' ] === 'FreeBSD' ) {
-            return chr( 1 ) . $i_stControl . chr( 2 );
-        }
-        return $i_stControl;
+    /**
+     * Prepare a prompt string for use with readline() by bracketing each ANSI
+     * escape sequence with the markers readline expects for non-printing spans.
+     *
+     * Why: GNU readline uses \1 ... \2 (start/end ignore); libedit (macOS
+     * default) uses \1 ... \1 as a toggle. Wrapping the whole prompt — or
+     * using the wrong markers — breaks readline's visible-width accounting
+     * and corrupts cursor positioning, line wrap, and redraw.
+     */
+    public static function readline( string $i_stPrompt ) : string {
+        [ $stOpen, $stClose ] = self::readlineMarkers();
+        $stStripped = strtr( $i_stPrompt, [ "\x01" => '', "\x02" => '' ] );
+        $stResult = preg_replace_callback(
+            '/(?:\x1b\[[0-?]*[ -\/]*[@-~]|\x1b[78])+/',
+            fn( array $m ) => $stOpen . $m[ 0 ] . $stClose,
+            $stStripped
+        );
+        return $stResult ?? $stStripped;
     }
 
 
@@ -212,6 +224,23 @@ class Term {
 
     public static function up( int $i_uLines = 1 ) : string {
         return "\033[{$i_uLines}A";
+    }
+
+
+    /**
+     * @return array{string, string} The open/close markers readline expects
+     * around non-printing spans, picked for the underlying readline library.
+     */
+    protected static function readlineMarkers() : array {
+        if ( function_exists( 'readline_info' ) ) {
+            $info = readline_info();
+            if ( is_array( $info ) && isset( $info[ 'library_version' ] ) ) {
+                # This is GNU readline.
+                return [ "\x01", "\x02" ];
+            }
+        }
+        # Assume libedit.
+        return [ "\x01", "\x01" ];
     }
 
 
