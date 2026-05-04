@@ -25,19 +25,19 @@ use JDWX\App\Term;
         if ( $st === false ) {
             return 1;
         }
-        echo "You said: {$st}\n";
+        echo "You said: {$st}\n", Term::reset();
 
         $stAltPrompt = Term::bold() . Term::color( Term::RED ) . 'AltPrompt> ' . Term::reset();
         $st = readline( $stAltPrompt );
-        echo "You said: {$st}\n";
+        echo "You said: {$st}\n", Term::reset();
 
         $stAltPrompt = Term::rlHack( Term::bold() . Term::color( Term::RED ), 1 ) . 'AltPrompt> ' . Term::rlHack( Term::reset(), 1 );
         $st = readline( $stAltPrompt );
-        echo "You said: {$st}\n";
+        echo "You said: {$st}\n", Term::reset();
 
         $stAltPrompt = Term::rlHack( Term::bold() . Term::color( Term::RED ), 2 ) . 'AltPrompt> ' . Term::rlHack( Term::reset(), 2 );
         $st = readline( $stAltPrompt );
-        echo "You said: {$st}\n";
+        echo "You said: {$st}\n", Term::reset();
 
         return 0;
     }
