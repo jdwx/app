@@ -172,6 +172,11 @@ class Term {
     }
 
 
+    public static function rlHack( string $i_stControl, int $i_uCloser = 1 ) : string {
+        return chr( 1 ) . $i_stControl . chr( $i_uCloser );
+    }
+
+
     public static function save() : string {
         return match ( $_ENV[ 'TERM' ] ) {
             'xterm', 'xterm-256color' => "\0337",
