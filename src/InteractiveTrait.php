@@ -15,6 +15,9 @@ use RuntimeException;
 trait InteractiveTrait {
 
 
+    private string $stDefaultPrompt = '> ';
+
+
     /**
      * @param string $i_stPrompt
      * @param ?bool $i_nbDefault If null, the user must enter "yes" or "no".
@@ -58,18 +61,37 @@ trait InteractiveTrait {
     abstract public function error( string|\Stringable $message, array $context = [] ) : void;
 
 
+    public function getDefaultPrompt() : string {
+        return $this->stDefaultPrompt;
+    }
+
+
+    /**
+     * @param string|null $i_nstCustomPrompt An optional custom prompt.
+     * @return string Custom prompt or default prompt if none provided.
+     */
+    public function getPrompt( ?string $i_nstCustomPrompt = null ) : string {
+        return $i_nstCustomPrompt ?? $this->getDefaultPrompt();
+    }
+
+
+    public function setDefaultPrompt( string $i_stDefaultPrompt ) : void {
+        $this->stDefaultPrompt = $i_stDefaultPrompt;
+    }
+
+
     abstract public function warning( string|\Stringable $message, array $context = [] ) : void;
 
 
     /**
      * Reads one line of input from the user.
      *
-     * @param string $i_stPrompt The prompt to display.
+     * @param ?string $i_nstPrompt An optional custom prompt.
      *
      * @noinspection PhpComposerExtensionStubsInspection
      */
-    protected function readLine( string $i_stPrompt ) : false|string {
-        return readline( Term::readline( $i_stPrompt ) );
+    protected function readLine( ?string $i_nstPrompt = null ) : false|string {
+        return readline( Term::readline( $this->getPrompt( $i_nstPrompt ) ) );
     }
 
 
