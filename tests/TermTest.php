@@ -56,6 +56,14 @@ final class TermTest extends TestCase {
     }
 
 
+    public function testTitle() : void {
+        $stInput = 'foo';
+        $stExpected = "\033]2;{$stInput}\007";
+        $stOutput = Term::title( $stInput );
+        self::assertSame( $stExpected, $stOutput );
+    }
+
+
     /**
      * @return list<string> The inferred readline markers for the current readline backend.
      */

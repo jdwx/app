@@ -217,6 +217,17 @@ class Term {
     }
 
 
+    /**
+     * @param string $i_stText
+     * @return string
+     *
+     * Set the window title.
+     */
+    public static function title( string $i_stText ) : string {
+        return "\033]2;{$i_stText}\007";
+    }
+
+
     public static function underline() : string {
         return "\033[4m";
     }
