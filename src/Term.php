@@ -145,7 +145,7 @@ class Term {
 
 
     public static function restore() : string {
-        return match ( $_ENV[ 'TERM' ] ) {
+        return match ( self::term() ) {
             'xterm', 'xterm-256color' => "\0338",
             default => "\033[u",
         };
@@ -163,7 +163,7 @@ class Term {
 
 
     public static function save() : string {
-        return match ( $_ENV[ 'TERM' ] ) {
+        return match ( self::term() ) {
             'xterm', 'xterm-256color' => "\0337",
             default => "\033[s",
         };
@@ -173,6 +173,11 @@ class Term {
     /** Warning: This is not widely supported. */
     public static function strike() : string {
         return "\033[9m";
+    }
+
+
+    public static function term() : string {
+        return $_ENV[ 'TERM' ] ?? 'vt100';
     }
 
 
@@ -197,7 +202,7 @@ class Term {
 
 
     public static function textForeground( string $i_stText, string $i_stColor ) : string {
-        return "\033[" . self::color( $i_stColor ) . $i_stText . self::color( self::DEFAULT );
+        return self::color( $i_stColor ) . $i_stText . self::color( self::DEFAULT );
     }
 
 
