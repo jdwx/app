@@ -113,7 +113,7 @@ abstract class Application implements LoggerInterface {
         if ( $i_bstValue === true || $i_bstValue === false ) {
             throw new InvalidArgumentException( "Unknown option \"{$i_stOption}\"" );
         }
-        throw new InvalidArgumentException( "Unknown option \"{$i_stOption}" . ( $i_bstValue ? "({$i_bstValue})" : '' ) . "\"" );
+        throw new InvalidArgumentException( "Unknown option \"{$i_stOption}\"" . ( $i_bstValue ? "({$i_bstValue})" : '' ) . "\"" );
     }
 
 
