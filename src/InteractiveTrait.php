@@ -20,7 +20,8 @@ trait InteractiveTrait {
 
     /**
      * @param string $i_stPrompt
-     * @param ?bool $i_nbDefault If null, the user must enter "yes" or "no".
+     * @param ?bool $i_nbDefault If null, the user *must* enter "yes" or "no". If a boolean, an
+     *                           empty response will return this value.
      * @param bool $i_bReturnOnFail If readline() fails, return this value.
      * @return bool
      *
@@ -30,7 +31,8 @@ trait InteractiveTrait {
      * values.
      *
      * If the $i_nbDefault parameter is not null, the user can press Enter to
-     * accept the default value.  It is your responsibility to ensure that the
+     * accept the default value.  If you provide a default value, it is your
+     * responsibility to ensure that the
      * prompt makes it clear what the default value is.
      *
      * The $i_bReturnOnFail parameter is used to handle the case where readline()
