@@ -8,8 +8,8 @@
     }
   },
   "require": {
-    "php": ">=8.2.0",
-    "jdwx/args": "^1.0",
+    "php": ">=8.3.0",
+    "jdwx/args": "^2.0",
     "jdwx/log": "^2.0",
     "psr/log": "^3.0",
     "ext-posix": "*"
@@ -18,14 +18,14 @@
     "ext-readline": "For interactive applications."
   },
   "require-dev": {
-    "jetbrains/phpstorm-attributes": "^1.0",
+    "jetbrains/phpstorm-attributes": "^1.2",
     "phan/phan": "^v6",
-    "phpstan/phpstan": "^2.0",
-    "phpunit/phpunit": "^12"
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^12.5"
   },
   "scripts": {
     "phan": "PHAN_ALLOW_XDEBUG=1 php -d xdebug.mode=off vendor/bin/phan --analyze-twice",
     "phpstan": "phpstan",
-    "test": "vendor/bin/phpunit tests"
+    "phpunit": "vendor/bin/phpunit tests"
   }
 }

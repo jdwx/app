@@ -11,7 +11,7 @@ use JDWX\App\Term;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 
-( new class( $argv ) extends Application {
+( new class( $argv ?? [] ) extends Application {
 
 
     protected function main() : int {

@@ -6,8 +6,8 @@ declare( strict_types = 1 );
 
 use JDWX\App\Application;
 use JDWX\Args\Arguments;
-use JDWX\Args\BadArgumentException;
-use JDWX\Args\ExtraArgumentsException;
+use JDWX\Args\Exceptions\BadArgumentException;
+use JDWX\Args\Exceptions\ExtraArgumentsException;
 use JDWX\Log\BufferLogger;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

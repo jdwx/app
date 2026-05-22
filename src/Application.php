@@ -10,9 +10,9 @@ namespace JDWX\App;
 use Exception;
 use InvalidArgumentException;
 use JDWX\Args\Arguments;
-use JDWX\Args\BadArgumentException;
-use JDWX\Args\ExtraArgumentsException;
-use JDWX\Args\MissingArgumentException;
+use JDWX\Args\Exceptions\BadArgumentException;
+use JDWX\Args\Exceptions\ExtraArgumentsException;
+use JDWX\Args\Exceptions\MissingArgumentException;
 use JDWX\Log\StderrLogger;
 use JDWX\Param\Parse;
 use Psr\Log\LoggerInterface;
@@ -26,9 +26,9 @@ abstract class Application implements LoggerInterface {
 
 
     /** @noinspection PhpUnused */
-    public const EXIT_SUCCESS = 0;
+    public const int EXIT_SUCCESS = 0;
 
-    public const EXIT_FAILURE = 1;
+    public const int EXIT_FAILURE = 1;
 
 
     use LoggerTrait;

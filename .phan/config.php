@@ -6,8 +6,8 @@ declare( strict_types = 1 );
 
 return [
 
-    'minimum_target_php_version' => '8.2',
-    'target_php_version' => '8.2',
+    'minimum_target_php_version' => '8.3',
+    'target_php_version' => '8.5',
 
     'directory_list' => [
         'examples/',
