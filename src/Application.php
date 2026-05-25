@@ -44,13 +44,13 @@ abstract class Application implements LoggerInterface {
 
     private Arguments $args;
 
-    private readonly LoggerInterface $log;
+    private readonly LoggerInterface $logger;
 
 
     /** @param string[]|Arguments|null $i_argv */
-    public function __construct( array|Arguments|null $i_argv = null, ?LoggerInterface $log = null ) {
+    public function __construct( array|Arguments|null $i_argv = null, ?LoggerInterface $logger = null ) {
         global $argv;
-        $this->log = $log ?? new StderrLogger();
+        $this->logger = $logger ?? new StderrLogger();
         $this->pid = getmypid();
         if ( $i_argv instanceof Arguments ) {
             $this->args = $i_argv;
@@ -103,6 +103,11 @@ abstract class Application implements LoggerInterface {
     }
 
 
+    public function getLogger() : LoggerInterface {
+        return $this->logger;
+    }
+
+
     public function handleOption( string $i_stOption, bool|string $i_bstValue ) : void {
         $i_stOption = str_replace( '-', '_', $i_stOption );
         $method = 'handleOption_' . strtolower( $i_stOption );
@@ -141,7 +146,7 @@ abstract class Application implements LoggerInterface {
         if ( ( LogLevel::DEBUG === $level || LOG_DEBUG === $level ) && ! $this->bDebug ) {
             return;
         }
-        $this->log->log( $level, $message, $context );
+        $this->getLogger()->log( $level, $message, $context );
     }
 
 

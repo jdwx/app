@@ -28,14 +28,14 @@ abstract class InteractiveApplication extends Application {
     use InteractiveTrait;
 
 
-    public function __construct( array|Arguments|null $i_argv = null, ?LoggerInterface $log = null ) {
+    public function __construct( array|Arguments|null $i_argv = null, ?LoggerInterface $logger = null ) {
         # Require the readline extension.
         if ( ! extension_loaded( 'readline' ) ) {
             // @codeCoverageIgnoreStart
             throw new LogicException( 'The readline extension is required.' );
             // @codeCoverageIgnoreEnd
         }
-        parent::__construct( $i_argv, $log );
+        parent::__construct( $i_argv, $logger );
     }
 
 
