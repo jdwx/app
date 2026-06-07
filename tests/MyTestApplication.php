@@ -27,7 +27,7 @@ class MyTestApplication extends Application {
     }
 
 
-    protected function handleException( Exception $i_ex ) : ?int {
+    protected function handleException( Throwable $i_ex ) : ?int {
         parent::handleException( $i_ex );
         return $this->niErrorExitStatus;
     }

@@ -7,7 +7,6 @@ declare( strict_types = 1 );
 namespace JDWX\App;
 
 
-use Exception;
 use InvalidArgumentException;
 use JDWX\Args\Arguments;
 use JDWX\Args\Exceptions\BadArgumentException;
@@ -162,10 +161,11 @@ abstract class Application implements LoggerInterface {
             if ( $this->bDebug ) {
                 $this->debugCleanup();
             }
+            $this->shutdown();
             $this->debug( "application ends with {$rc}" );
             flush();
             $this->exit( $rc );
-        } catch ( Exception $ex ) {
+        } catch ( Throwable $ex ) {
             $ni = $this->handleException( $ex );
             if ( is_int( $ni ) ) {
                 $this->exit( $ni );
@@ -174,6 +174,7 @@ abstract class Application implements LoggerInterface {
     }
 
 
+    /** This exists to be overloaded by child classes. */
     public function setup() : void {}
 
 
@@ -200,7 +201,7 @@ abstract class Application implements LoggerInterface {
      *              will not be called and execution will continue in the
      *              calling script below the original call to the run() method.
      */
-    protected function handleException( Exception $i_ex ) : ?int {
+    protected function handleException( Throwable $i_ex ) : ?int {
         $r = static::throwableToArray( $i_ex, i_bIncludeTrace: false );
         $stMessage = $r[ 'message' ];
         unset( $r[ 'message' ] );
@@ -226,6 +227,10 @@ abstract class Application implements LoggerInterface {
     protected function newArguments( array $i_argv ) : Arguments {
         return new Arguments( $i_argv );
     }
+
+
+    /** This exists to be overloaded by child classes. */
+    protected function shutdown() : void {}
 
 
 }
