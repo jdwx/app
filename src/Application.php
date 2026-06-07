@@ -170,6 +170,8 @@ abstract class Application implements LoggerInterface {
             if ( is_int( $ni ) ) {
                 $this->exit( $ni );
             }
+        } finally {
+            $this->finally();
         }
     }
 
@@ -194,6 +196,10 @@ abstract class Application implements LoggerInterface {
     protected function exit( int $i_iStatus ) : void {
         exit( $i_iStatus );
     }
+
+
+    /** This exists to be overloaded by child classes. */
+    protected function finally() : void {}
 
 
     /**
