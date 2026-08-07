@@ -157,21 +157,20 @@ abstract class Application implements LoggerInterface {
             if ( $this->bDebug ) {
                 $this->debugSetup();
             }
-            $rc = $this->main();
+            $nuStatus = $this->main();
             if ( $this->bDebug ) {
                 $this->debugCleanup();
             }
             $this->shutdown();
-            $this->debug( "application ends with {$rc}" );
-            flush();
-            $this->exit( $rc );
+            $this->debug( "application ends with {$nuStatus}" );
         } catch ( Throwable $ex ) {
-            $ni = $this->handleException( $ex );
-            if ( is_int( $ni ) ) {
-                $this->exit( $ni );
-            }
+            $nuStatus = $this->handleException( $ex );
         } finally {
+            flush();
             $this->finally();
+        }
+        if ( is_int( $nuStatus ) ) {
+            $this->exit( $nuStatus );
         }
     }
 
